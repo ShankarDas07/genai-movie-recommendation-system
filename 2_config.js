@@ -21,16 +21,31 @@ import { GoogleGenAI } from "@google/genai";
 // Load .env file → puts values into process.env
 dotenv.config();
 
+
+
 // =====================================================================
 // 1. NEO4J
 // =====================================================================
 // neo4j.driver() creates a connection pool (not single connection)
 // neo4j+s:// = Bolt protocol with TLS (required for Aura cloud)
 // =====================================================================
+// const driver = neo4j.driver(
+//   process.env.NEO4J_URI,
+//   neo4j.auth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
+// );
+
+  //ata optimize :- ERROR ASA6ILO BOLA CLAUDE THAKA COPY KORA6IVNA HOLA PURONO CODE TA TIK 6ILO 
 const driver = neo4j.driver(
   process.env.NEO4J_URI,
-  neo4j.auth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
+  neo4j.auth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD),
+  {
+    maxConnectionPoolSize: 50,
+    connectionAcquisitionTimeout: 120000,
+    maxTransactionRetryTime: 30000,
+  }
 );
+
+
 
 // =====================================================================
 // 2. PINECONE
@@ -52,7 +67,9 @@ const pineconeIndex = pinecone.index(process.env.PINECONE_INDEX_NAME);
 // Paid tier has high limits (1000+ RPM). No need for older models.
 // 2.5-flash = better quality + fast + cheap on paid tier.
 const llm = new ChatGoogleGenerativeAI({
-  model: "gemini-2.5-flash",
+  // model: "gemini-embedding-001", //--> ata ho66a neo4j thaka vectoDb ta data dhukano
+    model: "gemini-2.5-flash",
+
   apiKey: process.env.GEMINI_API_KEY,
   temperature: 0,
 });

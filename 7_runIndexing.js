@@ -16,6 +16,7 @@ import { extractAllEntities } from "./4_entityExtractor.js";
 import { buildGraph } from "./5_graphBuilder.js";
 import { buildVectorStore } from "./6_vectorStore.js";
 import { closeConnections } from "./2_config.js";
+import { PDFDocument } from "pdf-lib"; // 1000 page r upor pdf thakla ota divide kora daba 
 
 async function runIndexing(pdfPath) {
   console.log("===========================================");
@@ -26,16 +27,17 @@ async function runIndexing(pdfPath) {
 
   try {
     // ── STEP 1: Extract Entities from PDF (Gemini) ──
-    console.log("── STEP 1: Extracting Entities (Gemini + PDF Upload) ──");
-    const entities = await extractAllEntities(pdfPath);
+    // console.log("── STEP 1: Extracting Entities (Gemini + PDF Upload) ──");
+    // const entities = await extractAllEntities(pdfPath);
 
-    // ── STEP 2: Build Neo4j Graph ──
-    console.log("\n── STEP 2: Building Graph (Neo4j) ──");
-    await buildGraph(entities);
+    // // ── STEP 2: Build Neo4j Graph ──
+    // console.log("\n── STEP 2: Building Graph (Neo4j) ──");
+    // await buildGraph(entities);
 
     // ── STEP 3: Build Vector Store (Parse PDF → Chunk → Embed → Pinecone) ──
     console.log("\n── STEP 3: Building Vector Store (Pinecone) ──");
-    await buildVectorStore(pdfPath);
+    // await buildVectorStore(pdfPath);
+    await buildVectorStore();
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
     console.log("\n===========================================");
@@ -49,7 +51,7 @@ async function runIndexing(pdfPath) {
   }
 }
 
-const pdfPath = './data/movies.pdf';
+const pdfPath = './data/movies.pdf';   
 if (!pdfPath) {
   console.error("Usage: npm run index -- ./data/movies.pdf");
   process.exit(1);
